@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StatBI Quantum - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="re-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fa-solid fa-bolt logo-icon"></i>
+                <div>
+                    <h2>StatBI Quantum</h2>
+                    <p>Advanced Engine</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <button class="menu-item active" data-target="view-descriptive">
+                    <i class="fa-solid fa-calculator"></i> Est. Descriptiva
+                </button>
+                <button class="menu-item" data-target="view-probability">
+                    <i class="fa-solid fa-dice"></i> Probabilidad
+                </button>
+                <button class="menu-item" data-target="view-distributions">
+                    <i class="fa-solid fa-chart-line"></i> Distribuciones
+                </button>
+            </nav>
+
+            <div class="upload-section">
+                <h4>Entrada de Datos</h4>
+                <div class="dropzone" id="dropzone">
+                    <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                    <p>Arrastra tu archivo .csv aquí o haz clic para buscar</p>
+                    <input type="file" id="csv-file" accept=".csv">
+                </div>
+            </div>
+
+            <div class="variables-section" id="variables-selector-block" style="display: none; padding: 0 4px;">
+                <h4>Variables de Análisis</h4>
+                <div style="margin-bottom: 12px;">
+                    <label for="select-var-x" style="font-size: 12px; color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Variable Eje X:</label>
+                    <select id="select-var-x" style="width: 100%; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-size: 13px; outline: none; cursor: pointer; transition: border-color 0.2s;"></select>
+                </div>
+                <div>
+                    <label for="select-var-y" style="font-size: 12px; color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Variable Eje Y (Métricas):</label>
+                    <select id="select-var-y" style="width: 100%; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-size: 13px; outline: none; cursor: pointer; transition: border-color 0.2s;"></select>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <section id="view-descriptive" class="app-view active">
+                <header class="view-header">
+                    <h1>Estadística Descriptiva</h1>
+                    <p>Haz clic en los KPIs para alternar el enfoque analítico en el gráfico</p>
+                </header>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card static">
+                        <div class="kpi-icon-wrapper bg-purple"><i class="fa-solid fa-database"></i></div>
+                        <div class="kpi-info"><span>Total Muestras (N)</span><p class="kpi-value" id="kpi-total">0</p></div>
+                    </div>
+                    <button class="kpi-card active" data-metric="media">
+                        <div class="kpi-icon-wrapper bg-blue-light"><span class="math-sym">μ</span></div>
+                        <div class="kpi-info"><span>Media Aritmética</span><p class="kpi-value" id="kpi-media">0.00</p></div>
+                    </button>
+                    <button class="kpi-card" data-metric="mediana">
+                        <div class="kpi-icon-wrapper bg-green-light"><span class="math-sym">Me</span></div>
+                        <div class="kpi-info"><span>Mediana</span><p class="kpi-value" id="kpi-mediana">0.00</p></div>
+                    </button>
+                    <button class="kpi-card" data-metric="moda">
+                        <div class="kpi-icon-wrapper bg-orange-light"><span class="math-sym">Mo</span></div>
+                        <div class="kpi-info"><span>Moda</span><p class="kpi-value" id="kpi-moda">0.00</p></div>
+                    </button>
+                    <button class="kpi-card" data-metric="desviacion">
+                        <div class="kpi-icon-wrapper bg-pink-light"><span class="math-sym">σ</span></div>
+                        <div class="kpi-info"><span>Desv. Estándar</span><p class="kpi-value" id="kpi-desviacion">0.00</p></div>
+                    </button>
+                    <button class="kpi-card" data-metric="varianza">
+                        <div class="kpi-icon-wrapper bg-teal-light"><span class="math-sym">σ²</span></div>
+                        <div class="kpi-info"><span>Varianza</span><p class="kpi-value" id="kpi-varianza">0.00</p></div>
+                    </button>
+                </div>
+
+                <div class="middle-grid">
+                    <div class="content-block table-block">
+                        <div class="block-header">
+                            <h3><i class="fa-solid fa-table"></i> Vista de Datos (CSV)</h3>
+                            <span class="records-indicator" id="records-count">Esperando archivo...</span>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Índice (X)</th><th>Valor (Y)</th></tr></thead>
+                                <tbody id="table-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="table-pagination"></div>
+                    </div>
+
+                    <div class="content-block chart-block">
+                        <div class="block-header"><h3 id="chart-title">Visualización: Gráfico de Dispersión</h3></div>
+                        <div class="canvas-wrapper"><canvas id="main-chart"></canvas></div>
+                        <div class="chart-footer">
+                            <div class="chart-options-container">
+                                <span class="options-label">Alternativas de gráfico:</span>
+                                <div class="options-buttons">
+                                    <button class="opt-btn active">Dispersión Estándar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-block interpretation-block margin-top-20">
+                    <h3><i class="fa-solid fa-brain text-green"></i> Conclusiones e Interpretación Automatizada</h3>
+                    <div class="insight-list" id="insight-container">
+                        <p class="placeholder-text">Carga datos numéricos para procesar interpretaciones lógicas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-probability" class="app-view">
+                <header class="view-header">
+                    <h1>Análisis de Probabilidad</h1>
+                    <p>Herramientas de cálculo para eventos simples y combinados</p>
+                </header>
+ 
+                <div class="probability-layout-grid">
+                    <div class="content-block layout-expanded-block">
+                        <h3>Módulo de Configuración</h3>
+                        <div class="tab-container" id="prob-tabs">
+                            <span class="tab active" data-tab="simple">Probabilidad Simple</span>
+                            <span class="tab" data-tab="condicional">Condicional</span>
+                            <span class="tab" data-tab="bayes">Teorema de Bayes</span>
+                        </div>
+                        <p class="section-instruction" id="prob-instruction">Determina los parámetros del evento:</p>
+                        <div class="form-vertical">
+                            <div id="prob-dynamic-inputs">
+                                <!-- Se inyectará dinámicamente con JS -->
+                            </div>
+                            <button class="btn-primary margin-top-32" id="btn-calculate-prob"><i class="fa-solid fa-calculator"></i> Calcular Probabilidad</button>
+                        </div>
+                    </div>
+ 
+                    <div class="content-block layout-expanded-block center-content-box" id="prob-result-container">
+                        <h3>Caja de Resultados</h3>
+                        <div class="result-box large-result" id="prob-result-box" style="width: 100%;">
+                            <p>El resultado matemático calculado aparecerá tabulado en esta sección tras ejecutar la operación del panel izquierdo.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-distributions" class="app-view">
+                <header class="view-header">
+                    <h1>Modelos de Distribución Inferencial</h1>
+                    <p>Modelado matemático continuo y discreto</p>
+                </header>
+
+                <div class="distributions-layout-grid">
+                    <div class="content-block layout-expanded-block">
+                        <h3>Parámetros del Modelo</h3>
+                        <div class="control-group">
+                            <label>Selecciona Tipo de Distribución</label>
+                            <select class="large-select" id="select-distribution">
+                                <option value="normal">Distribución Normal Gaussiana</option>
+                                <option value="binomial">Distribución Binomial Discreta</option>
+                            </select>
+                        </div>
+                        <div id="dist-inputs-container" class="margin-top-20">
+                            <!-- Se cargan dinámicamente según la distribución -->
+                        </div>
+                        
+                        <div class="simulation-interval-section margin-top-20" style="border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                            <h4 style="font-size: 13px; color: #475569; font-weight: 600; margin-bottom: 12px;">Intervalo de Simulación (Acumulado)</h4>
+                            <div class="form-row-double">
+                                <div class="input-group">
+                                    <label id="lbl-sim-min">Límite Inferior (a)</label>
+                                    <input type="number" id="dist-sim-min" placeholder="-∞ o valor" style="padding: 10px;">
+                                </div>
+                                <div class="input-group">
+                                    <label id="lbl-sim-max">Límite Superior (b)</label>
+                                    <input type="number" id="dist-sim-max" placeholder="∞ o valor" style="padding: 10px;">
+                                </div>
+                            </div>
+                            <div id="dist-sim-result" class="margin-top-12" style="font-size: 13px; font-weight: 600; color: #7c3aed; min-height: 20px;"></div>
+                        </div>
+
+                        <div class="form-actions margin-top-32" style="display: flex; gap: 12px;">
+                            <button class="btn-outline" id="btn-plot-distribution"><i class="fa-solid fa-chart-area"></i> Graficar Modelo</button>
+                            <button class="btn-purple" id="btn-simulate-probability"><i class="fa-solid fa-wand-magic-sparkles"></i> Simular Probabilidad</button>
+                        </div>
+                    </div>
+
+                    <div class="content-block layout-expanded-block">
+                        <h3>Curva de Densidad de Probabilidad</h3>
+                        <div class="canvas-wrapper secondary-canvas">
+                            <canvas id="distribution-curve-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="app-status-bar">
+                <span id="status-file">Archivo Activo: <strong>Ninguno</strong></span>
+                <span id="status-records">Registros Cargados: 0</span>
+            </footer>
+
+        </main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="reader.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

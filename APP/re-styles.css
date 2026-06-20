@@ -1,0 +1,311 @@
+/* ==========================================================================
+   re-styles.css - Capa de Efectos Fluidos, Ondas de Tiempo y Fondo Orgánico
+   ========================================================================== */
+
+/* 1. MOTORES DE ANIMACIÓN Y KEYFRAMES */
+
+/* Animación del fondo líquido */
+@keyframes ambientBlob {
+    0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+    33% { transform: translate(30px, -50px) scale(1.1) rotate(120deg); }
+    66% { transform: translate(-20px, 20px) scale(0.95) rotate(240deg); }
+    100% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
+}
+
+/* Flotación sutil constante del logo del rayo */
+@keyframes continuousFloat {
+    0%, 100% { transform: translateY(0px); filter: drop-shadow(0 0 4px #eab308); }
+    50% { transform: translateY(-4px); filter: drop-shadow(0 0 12px #eab308); }
+}
+
+/* Símbolos y números flotando verticalmente sobre el icono */
+@keyframes floatingNumbers {
+    0% { opacity: 0; transform: translateY(0) scale(0.6); }
+    30% { opacity: 0.7; }
+    75% { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-28px) scale(1.15); }
+}
+
+/* Onda de letras: Ciclo de 7 segundos (6.5s quieto, 0.5s se levanta) */
+@keyframes letterWave {
+    0%, 92%, 100% { transform: translateY(0); }
+    96% { transform: translateY(-6px); color: #2563eb; }
+}
+
+/* Estelas de color - Burst de Partículas */
+@keyframes particleBurst {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(0.25);
+        opacity: 0;
+    }
+}
+
+/* Brillo luminoso al recargar gráficos */
+@keyframes chartFlash {
+    0% { box-shadow: 0 0 0px rgba(59, 130, 246, 0); border-color: #cbd5e1; }
+    50% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.35); border-color: #3b82f6; }
+    100% { box-shadow: 0 1px 3px rgba(0,0,0,0.02); border-color: #e2e8f0; }
+}
+
+/* Animaciones de entrada en la App */
+@keyframes slideInFromLeft {
+    0% { transform: translateX(-100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+@keyframes fadeInUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+
+/* 2. TRANSICIONES ELEMENTALES SUAVES */
+.menu-item, .kpi-card, .dropzone, .btn-primary, .btn-purple, .tab, tr, .content-block {
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+
+/* 3. CAPA DEL FONDO VIVO (ORGANIC BLOB BACKGROUND) */
+body::before {
+    content: "";
+    position: fixed;
+    top: -20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+    z-index: -1;
+    animation: ambientBlob 20s infinite linear;
+    pointer-events: none;
+}
+body::after {
+    content: "";
+    position: fixed;
+    bottom: -10%;
+    right: -5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.05) 0%, transparent 70%);
+    z-index: -1;
+    animation: ambientBlob 25s infinite linear reverse;
+    pointer-events: none;
+}
+.main-content {
+    backdrop-filter: blur(40px); /* Desenfoque sutil sobre el fondo vivo */
+}
+
+
+/* 4. LOGO Y EFECTO DE EMISIÓN DE NÚMEROS/SÍMBOLOS EN PESTAÑA ACTIVA */
+.logo-icon {
+    animation: continuousFloat 3s ease-in-out infinite !important;
+}
+
+/* Efectos de Calculadora en pestaña de Estadística activa */
+.menu-item[data-target="view-descriptive"].active {
+    position: relative;
+}
+.menu-item[data-target="view-descriptive"].active::before {
+    content: "7";
+    position: absolute;
+    left: 18px;
+    top: 8px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #60a5fa;
+    animation: floatingNumbers 2.5s infinite linear;
+}
+.menu-item[data-target="view-descriptive"].active::after {
+    content: "3";
+    position: absolute;
+    left: 28px;
+    top: 16px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #93c5fd;
+    animation: floatingNumbers 3.2s infinite linear 1s;
+}
+
+/* Efectos de Dados en pestaña de Probabilidad activa */
+.menu-item[data-target="view-probability"].active {
+    position: relative;
+}
+.menu-item[data-target="view-probability"].active::before {
+    content: "⚄";
+    position: absolute;
+    left: 18px;
+    top: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #34d399;
+    animation: floatingNumbers 2.7s infinite linear;
+}
+.menu-item[data-target="view-probability"].active::after {
+    content: "%";
+    position: absolute;
+    left: 28px;
+    top: 16px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #a7f3d0;
+    animation: floatingNumbers 3.5s infinite linear 0.8s;
+}
+
+/* Efectos de Curva en pestaña de Distribuciones activa */
+.menu-item[data-target="view-distributions"].active {
+    position: relative;
+}
+.menu-item[data-target="view-distributions"].active::before {
+    content: "μ";
+    position: absolute;
+    left: 18px;
+    top: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #a78bfa;
+    animation: floatingNumbers 2.4s infinite linear;
+}
+.menu-item[data-target="view-distributions"].active::after {
+    content: "σ";
+    position: absolute;
+    left: 28px;
+    top: 16px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #ddd6fe;
+    animation: floatingNumbers 3.1s infinite linear 1.2s;
+}
+
+
+/* 5. TARJETAS KPI: EFECTO DE AGRANDAMIENTO, ESTELA EXTERIOR E INTERACCIÓN SUTIL */
+.kpi-card {
+    position: relative !important; /* Asegura que la estela de color se alinee con cada tarjeta */
+}
+
+.kpi-card:hover:not(.static) {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+    transform: none !important;
+}
+
+.kpi-card.active {
+    outline: 2px solid currentColor !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Agrandamiento del símbolo matemático (sutil y sin text-shadow) */
+.kpi-card.active .math-sym {
+    display: inline-block;
+    animation: activeSymbolGlow 4.5s ease-in-out infinite;
+    color: inherit;
+}
+
+@keyframes activeSymbolGlow {
+    0%, 100% {
+        transform: scale(1.12);
+    }
+    50% {
+        transform: scale(1.18);
+    }
+}
+
+/* Envoltura del icono con estela exterior sutil (anillo de pulso lento) */
+.kpi-card.active .kpi-icon-wrapper {
+    animation: iconWrapperRing 3s infinite ease-in-out;
+}
+
+@keyframes iconWrapperRing {
+    0% {
+        box-shadow: 0 0 0 0px currentColor;
+        transform: scale(1.02);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(0, 0, 0, 0);
+        transform: scale(1.02);
+    }
+    100% {
+        box-shadow: 0 0 0 0px rgba(0, 0, 0, 0);
+        transform: scale(1);
+    }
+}
+
+/* La tarjeta activa ejecuta la animación en los números del KPI */
+.kpi-card.active .kpi-value {
+    display: inline-block;
+    animation: letterWave 7s infinite ease-in-out;
+}
+
+/* Partículas para estela de color al hacer clic (fuegos artificiales localizados) */
+.color-trail-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 100;
+    filter: blur(0.2px) drop-shadow(0 0 2px currentColor);
+    animation: particleBurst 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+
+/* 6. APLICACIÓN DE ANIMACIÓN DE ENTRADA AL CARGAR LA APP */
+.sidebar {
+    animation: slideInFromLeft 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+.main-content {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+.kpi-grid {
+    animation: fadeInUp 0.7s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+}
+.middle-grid .table-block {
+    animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+    animation-delay: 0.1s;
+}
+.middle-grid .chart-block {
+    animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+    animation-delay: 0.2s;
+}
+.interpretation-block {
+    animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+    animation-delay: 0.3s;
+}
+.chart-update-flash {
+    animation: chartFlash 0.8s ease-out;
+}
+
+
+/* 7. RESPETAR LA CARACTERÍSTICA STICKY DEL FOOTER */
+.app-status-bar {
+    flex-shrink: 0 !important;
+}
+
+
+/* 8. DETALLES DE INTERACCIÓN SUTIL EN EL RESTO DE COMPONENTES */
+.menu-item:hover:not(.active) {
+    padding-left: 22px !important;
+    color: #3b82f6 !important;
+    background: rgba(30, 41, 59, 0.4) !important;
+}
+tr:hover td {
+    background-color: #f8fafc !important;
+    color: #2563eb !important;
+}
+.btn-primary:hover, .btn-purple:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25) !important;
+}
+.content-block h3 {
+    margin-bottom: 24px !important;
+}
+.section-instruction {
+    margin-top: 10px;
+    margin-bottom: 20px !important;
+}
