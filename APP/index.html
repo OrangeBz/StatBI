@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StatBI Quantum - Dashboard</title>
+    <title>Quantum BI - Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="re-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,7 +16,7 @@
             <div class="logo-section">
                 <i class="fa-solid fa-bolt logo-icon"></i>
                 <div>
-                    <h2>StatBI Quantum</h2>
+                    <h2>Quantum BI</h2>
                     <p>Advanced Engine</p>
                 </div>
             </div>
@@ -48,9 +48,24 @@
                     <label for="select-var-x" style="font-size: 12px; color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Variable Eje X:</label>
                     <select id="select-var-x" style="width: 100%; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-size: 13px; outline: none; cursor: pointer; transition: border-color 0.2s;"></select>
                 </div>
-                <div>
+                <div style="margin-bottom: 16px;">
                     <label for="select-var-y" style="font-size: 12px; color: #94a3b8; font-weight: 600; display: block; margin-bottom: 4px;">Variable Eje Y (Métricas):</label>
                     <select id="select-var-y" style="width: 100%; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-size: 13px; outline: none; cursor: pointer; transition: border-color 0.2s;"></select>
+                </div>
+                
+                <!-- Slicing: Filtro de Rango de Filas -->
+                <div style="border-top: 1px solid #334155; padding-top: 12px; margin-top: 12px;">
+                    <h4 style="margin-bottom: 8px; font-size: 13px;">Rango de Filas</h4>
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex: 1;">
+                            <label for="range-start" style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 2px;">Fila Inicio:</label>
+                            <input type="number" id="range-start" value="1" min="1" style="width: 100%; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; padding: 6px; font-size: 12px; outline: none;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="range-end" style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 2px;">Fila Fin:</label>
+                            <input type="number" id="range-end" value="1" min="1" style="width: 100%; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 6px; padding: 6px; font-size: 12px; outline: none;">
+                        </div>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -137,7 +152,8 @@
                     <div class="content-block layout-expanded-block">
                         <h3>Módulo de Configuración</h3>
                         <div class="tab-container" id="prob-tabs">
-                            <span class="tab active" data-tab="simple">Probabilidad Simple</span>
+                            <span class="tab active" data-tab="combinatoria">Combinatoria</span>
+                            <span class="tab" data-tab="simple">Probabilidad Simple</span>
                             <span class="tab" data-tab="condicional">Condicional</span>
                             <span class="tab" data-tab="bayes">Teorema de Bayes</span>
                         </div>
@@ -146,7 +162,16 @@
                             <div id="prob-dynamic-inputs">
                                 <!-- Se inyectará dinámicamente con JS -->
                             </div>
-                            <button class="btn-primary margin-top-32" id="btn-calculate-prob"><i class="fa-solid fa-calculator"></i> Calcular Probabilidad</button>
+                            
+                            <!-- Contenedor Visual de Fórmula e Interacción en Tiempo Real -->
+                            <div id="prob-formula-box" style="margin-top: 20px; padding: 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">
+                                <span style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Fórmula y Sustitución</span>
+                                <div id="prob-formula-display" style="margin-top: 8px; font-size: 15px; color: #0f172a; font-weight: 600; font-family: 'Times New Roman', Times, serif; text-align: center;">
+                                    <!-- Se actualizará en tiempo real -->
+                                </div>
+                            </div>
+                            
+                            <button class="btn-primary margin-top-20" id="btn-calculate-prob"><i class="fa-solid fa-calculator"></i> Calcular Probabilidad</button>
                         </div>
                     </div>
  
@@ -173,6 +198,7 @@
                             <select class="large-select" id="select-distribution">
                                 <option value="normal">Distribución Normal Gaussiana</option>
                                 <option value="binomial">Distribución Binomial Discreta</option>
+                                <option value="poisson">Distribución de Poisson Discreta</option>
                             </select>
                         </div>
                         <div id="dist-inputs-container" class="margin-top-20">
@@ -205,6 +231,13 @@
                         <div class="canvas-wrapper secondary-canvas">
                             <canvas id="distribution-curve-chart"></canvas>
                         </div>
+                    </div>
+                </div>
+
+                <div class="content-block interpretation-block margin-top-20" id="dist-interpretation-block">
+                    <h3><i class="fa-solid fa-brain text-purple"></i> Conclusiones e Interpretación del Modelo</h3>
+                    <div class="insight-list" id="dist-insight-container">
+                        <p class="placeholder-text">Configura los parámetros del modelo y genera la gráfica para procesar interpretaciones lógicas.</p>
                     </div>
                 </div>
             </section>
